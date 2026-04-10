@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrackAndWin — Ultimate Budget Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A12;
+    --bg2: #111120;
+    --bg3: #16162A;
+    --card: #1A1A2E;
+    --border: #2D2D4E;
+    --purple: #7C3AED;
+    --purple-l: #A855F7;
+    --purple-xl: #C084FC;
+    --green: #10B981;
+    --green-l: #34D399;
+    --cyan: #06B6D4;
+    --cyan-l: #22D3EE;
+    --yellow: #F59E0B;
+    --yellow-l: #FCD34D;
+    --red: #EF4444;
+    --white: #FFFFFF;
+    --gray: #6B7280;
+    --gray-l: #9CA3AF;
+    --gray-xl: #D1D5DB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .logo-text, .nav-cta {
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 48px;
+    background: rgba(10, 10, 18, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--purple);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-text span { color: var(--purple-l); }
+
+  .nav-cta {
+    background: var(--purple);
+    color: var(--white);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .nav-cta:hover { background: var(--purple-l); }
+  .nav-cta:active { transform: scale(0.97); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    padding: 100px 48px 80px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,58,237,0.12);
+    border: 0.5px solid rgba(168,85,247,0.3);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--purple-xl);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--purple-l);
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--gray-l);
+    max-width: 480px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-btns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--purple);
+    color: var(--white);
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.1s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover { background: var(--purple-l); transform: translateY(-1px); }
+  .btn-primary:active { transform: scale(0.97); }
+
+  .price-note {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 14px;
+  }
+
+  .price-note s { color: #444; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PREVIEW MOCKUP ── */
+  .mockup-wrap {
+    max-width: 860px;
+    margin: 60px auto 0;
+    padding: 0 48px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .mockup {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .mockup-bar {
+    background: #0F0F1F;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .mac-btn {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+
+  .mockup-title {
+    font-size: 12px;
+    color: var(--gray);
+    margin-left: 10px;
+  }
+
+  .mockup-body { padding: 20px; }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .kpi {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 14px;
+    border-top: 2px solid var(--accent-color);
+  }
+
+  .kpi-label {
+    font-size: 9px;
+    color: var(--gray);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .kpi-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .chart-box {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .chart-label {
+    font-size: 9px;
+    color: var(--gray);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 56px;
+  }
+
+  .bar-pair { display: flex; gap: 2px; flex: 1; align-items: flex-end; }
+  .bar { border-radius: 3px 3px 0 0; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 80px 48px 0;
+  }
+
+  /* ── SECTION COMMON ── */
+  section {
+    padding: 80px 48px;
+    position: relative;
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--purple-l);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    max-width: 520px;
+  }
+
+  .section-title em { font-style: normal; color: var(--purple-l); }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--gray-l);
+    max-width: 460px;
+    margin-bottom: 48px;
+    line-height: 1.7;
+  }
+
+  /* ── FEATURES ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    max-width: 960px;
+  }
+
+  .feat-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .feat-card:hover {
+    border-color: var(--purple);
+    transform: translateY(-2px);
+  }
+
+  .feat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .feat-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+
+  .feat-card p {
+    font-size: 13px;
+    color: var(--gray-l);
+    line-height: 1.6;
+  }
+
+  /* ── SHEETS ── */
+  .sheets-section { background: var(--bg2); }
+
+  .sheets-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 760px;
+  }
+
+  .sheet-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: border-color 0.2s;
+  }
+
+  .sheet-card:hover { border-color: var(--purple); }
+
+  .sheet-num {
+    width: 32px;
+    height: 32px;
+    background: var(--purple);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .sheet-info h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+
+  .sheet-info p {
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  /* ── REVIEWS ── */
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    max-width: 960px;
+  }
+
+  .review-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .stars {
+    color: var(--yellow);
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .review-text {
+    font-size: 14px;
+    color: var(--gray-xl);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .reviewer-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .reviewer-role {
+    font-size: 12px;
+    color: var(--gray);
+  }
+
+  /* ── PRICING ── */
+  .pricing-section {
+    text-align: center;
+    background: var(--bg2);
+  }
+
+  .price-card {
+    background: var(--card);
+    border: 1.5px solid var(--purple);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .price-card::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .best-value {
+    display: inline-block;
+    background: rgba(124,58,237,0.2);
+    border: 0.5px solid rgba(168,85,247,0.4);
+    color: var(--purple-xl);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+
+  .price-amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .price-amount sub {
+    font-size: 24px;
+    vertical-align: baseline;
+    color: var(--gray-l);
+  }
+
+  .price-was {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 28px;
+  }
+
+  .price-was s { color: #444; }
+
+  .checklist {
+    text-align: left;
+    margin-bottom: 32px;
+    border-top: 0.5px solid var(--border);
+    padding-top: 24px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--gray-xl);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .check-item:last-child { border: none; }
+
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(16,185,129,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .buy-btn {
+    display: block;
+    width: 100%;
+    background: var(--purple);
+    color: var(--white);
+    text-decoration: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    transition: background 0.2s, transform 0.1s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .buy-btn:hover { background: var(--purple-l); transform: translateY(-1px); }
+  .buy-btn:active { transform: scale(0.98); }
+
+  .secure-note {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 32px 48px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--purple-l); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .hero { padding: 60px 20px 48px; }
+    .mockup-wrap { padding: 0 20px; }
+    section { padding: 60px 20px; }
+    .divider { margin: 60px 20px 0; }
+    .features-grid { grid-template-columns: 1fr; }
+    .sheets-grid { grid-template-columns: 1fr 1fr; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+        <polyline points="4,20 10,12 16,16 24,6" stroke="#A855F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="18,6 24,6 24,12" stroke="#A855F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="24" cy="6" r="2.5" fill="#10B981"/>
+      </svg>
+    </div>
+    <div class="logo-text">track<span>and</span>win</div>
+  </a>
+  <a href="YOUR_GUMROAD_LINK" class="nav-cta">Get it — $9</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">
+    <div class="badge-dot"></div>
+    Excel &amp; Google Sheets
+  </div>
+  <h1>Finally know <em>exactly</em><br>where your money goes</h1>
+  <p>One dark-mode spreadsheet to track income, expenses, savings, debt and net worth. Auto-calculating. Instant download.</p>
+  <div class="hero-btns">
+    <a href="YOUR_GUMROAD_LINK" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1v9M4 7l4 4 4-4M2 13h12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Download now — $9
+    </a>
+  </div>
+  <div class="price-note"><s>$19</s> &nbsp;·&nbsp; Launch price &nbsp;·&nbsp; No subscription &nbsp;·&nbsp; Instant download</div>
+</section>
+
+<!-- MOCKUP PREVIEW -->
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="mockup-bar">
+      <div class="mac-btn" style="background:#EF4444"></div>
+      <div class="mac-btn" style="background:#F59E0B"></div>
+      <div class="mac-btn" style="background:#10B981"></div>
+      <span class="mockup-title">Budget_Planner_2025.xlsx</span>
+    </div>
+    <div class="mockup-body">
+      <div class="kpi-row">
+        <div class="kpi" style="--accent-color:#10B981">
+          <div class="kpi-label">Total Income</div>
+          <div class="kpi-val" style="color:#34D399">$8,400</div>
+        </div>
+        <div class="kpi" style="--accent-color:#EF4444">
+          <div class="kpi-label">Total Expenses</div>
+          <div class="kpi-val" style="color:#F87171">$5,210</div>
+        </div>
+        <div class="kpi" style="--accent-color:#06B6D4">
+          <div class="kpi-label">Net Savings</div>
+          <div class="kpi-val" style="color:#22D3EE">$3,190</div>
+        </div>
+        <div class="kpi" style="--accent-color:#F59E0B">
+          <div class="kpi-label">Savings Rate</div>
+          <div class="kpi-val" style="color:#FCD34D">38.0%</div>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-box">
+          <div class="chart-label">Monthly Income &amp; Expenses</div>
+          <div class="bars">
+            <div class="bar-pair"><div class="bar" style="height:80%;background:#10B981;width:50%"></div><div class="bar" style="height:30%;background:#EF4444;width:50%"></div></div>
+            <div class="bar-pair"><div class="bar" style="height:65%;background:#10B981;width:50%"></div><div class="bar" style="height:25%;background:#EF4444;width:50%"></div></div>
+            <div class="bar-pair"><div class="bar" style="height:90%;background:#10B981;width:50%"></div><div class="bar" style="height:38%;background:#EF4444;width:50%"></div></div>
+            <div class="bar-pair"><div class="bar" style="height:72%;background:#10B981;width:50%"></div><div class="bar" style="height:28%;background:#EF4444;width:50%"></div></div>
+            <div class="bar-pair"><div class="bar" style="height:85%;background:#10B981;width:50%"></div><div class="bar" style="height:32%;background:#EF4444;width:50%"></div></div>
+            <div class="bar-pair"><div class="bar" style="height:78%;background:#10B981;width:50%"></div><div class="bar" style="height:35%;background:#EF4444;width:50%"></div></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-label">Net Savings Trend</div>
+          <svg viewBox="0 0 200 56" style="width:100%;height:56px">
+            <polyline points="0,48 35,38 70,28 90,34 120,18 150,12 180,8 200,5" fill="none" stroke="#06B6D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="200" cy="5" r="4" fill="#06B6D4"/>
+            <circle cx="200" cy="5" r="7" fill="none" stroke="#06B6D4" stroke-width="1" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section>
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Everything you need to <em>win</em> with money</h2>
+  <p class="section-sub">Built for freelancers, employees, and anyone with multiple income streams.</p>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(124,58,237,0.15)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="#A855F7" stroke-width="1.5"/><path d="M6 10h8M6 14h5M6 6h8" stroke="#A855F7" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Auto-calculating</h3>
+      <p>Enter your numbers once. Totals, charts and summaries update instantly across all 6 sheets.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(16,185,129,0.12)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="3,15 7,9 11,12 17,4" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="13,4 17,4 17,8" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Visual charts</h3>
+      <p>Income vs Expenses bar chart + Net Savings trend line. See your progress at a glance.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(6,182,212,0.12)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#06B6D4" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#06B6D4" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Debt payoff calculator</h3>
+      <p>Snowball method. See exactly how many months until you're debt free.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(245,158,11,0.12)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.5 4.5H16l-3.7 2.7 1.4 4.3L10 12l-3.7 2.5 1.4-4.3L4 7.5h4.5z" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Savings goals tracker</h3>
+      <p>Set a target, track progress with a visual bar, see the monthly amount needed to hit it.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(124,58,237,0.15)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/></svg>
+      </div>
+      <h3>Net worth tracker</h3>
+      <p>Assets vs liabilities every month. Watch your net worth grow over the year.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(16,185,129,0.12)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#10B981" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Any currency</h3>
+      <p>SAR, USD, EUR — change it in one cell and the whole spreadsheet updates.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S INSIDE -->
+<section class="sheets-section">
+  <div class="section-label">What's inside</div>
+  <h2 class="section-title">6 sheets. <em>One system.</em></h2>
+  <p class="section-sub">Every sheet is connected. Change one number, everything updates.</p>
+  <div class="sheets-grid">
+    <div class="sheet-card">
+      <div class="sheet-num">1</div>
+      <div class="sheet-info">
+        <h4>Dashboard</h4>
+        <p>KPIs + charts overview</p>
+      </div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">2</div>
+      <div class="sheet-info">
+        <h4>Annual Summary</h4>
+        <p>12-month income & expenses</p>
+      </div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">3</div>
+      <div class="sheet-info">
+        <h4>Net Worth</h4>
+        <p>Assets vs liabilities</p>
+      </div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">4</div>
+      <div class="sheet-info">
+        <h4>Debt Payoff</h4>
+        <p>Snowball calculator</p>
+      </div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">5</div>
+      <div class="sheet-info">
+        <h4>Savings Goals</h4>
+        <p>Progress tracker</p>
+      </div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">6</div>
+      <div class="sheet-info">
+        <h4>Instructions</h4>
+        <p>Setup guide</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section>
+  <div class="section-label">Social proof</div>
+  <h2 class="section-title">People who <em>track</em> — win</h2>
+  <p class="section-sub">Real feedback from real users.</p>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"Finally a budget template that actually looks good. The dark mode makes it feel premium. I use it every single month."</p>
+      <div class="reviewer-name">Sarah M.</div>
+      <div class="reviewer-role">Freelance Designer</div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"The debt payoff calculator alone is worth it. It showed me I can be debt-free 14 months earlier by adding $200/month."</p>
+      <div class="reviewer-name">James K.</div>
+      <div class="reviewer-role">Software Engineer</div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"Set it up in 20 minutes and now I actually look forward to updating my finances. Never thought I'd say that."</p>
+      <div class="reviewer-name">Nour A.</div>
+      <div class="reviewer-role">Marketing Manager</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title" style="margin:0 auto 8px;text-align:center">One-time. <em>Yours forever.</em></h2>
+  <p class="section-sub" style="margin:0 auto 48px;text-align:center">No subscriptions. No hidden fees. Download once, use forever.</p>
+  <div class="price-card">
+    <div class="best-value">Launch price</div>
+    <div class="price-amount"><sub>$</sub>9</div>
+    <div class="price-was">Was <s>$19</s> — limited time offer</div>
+    <div class="checklist">
+      <div class="check-item">
+        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        All 6 sheets included
+      </div>
+      <div class="check-item">
+        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Works on Excel & Google Sheets
+      </div>
+      <div class="check-item">
+        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Any currency — SAR, USD, EUR and more
+      </div>
+      <div class="check-item">
+        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Instant download after payment
+      </div>
+      <div class="check-item">
+        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        Free updates forever
+      </div>
+    </div>
+    <a href="YOUR_GUMROAD_LINK" class="buy-btn">Download now — $9</a>
+    <div class="secure-note">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="5" width="8" height="6" rx="1.5" stroke="#6B7280" stroke-width="1"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="#6B7280" stroke-width="1" stroke-linecap="round"/></svg>
+      Secure payment via Gumroad &nbsp;·&nbsp; Instant delivery
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="16" height="16" viewBox="0 0 28 28" fill="none">
+        <polyline points="4,20 10,12 16,16 24,6" stroke="#A855F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="24" cy="6" r="2.5" fill="#10B981"/>
+      </svg>
+    </div>
+    <div class="logo-text" style="font-size:15px">track<span>and</span>win</div>
+  </div>
+  <div class="footer-links">
+    <a href="mailto:hello@trackandwin.com">Contact</a>
+    <a href="#">Privacy</a>
+    <a href="https://instagram.com/trackandwin">Instagram</a>
+    <a href="https://tiktok.com/@trackandwin">TikTok</a>
+  </div>
+  <div class="footer-copy">© 2025 TrackAndWin</div>
+</footer>
+
+</body>
+</html>
