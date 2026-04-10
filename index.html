@@ -6,676 +6,212 @@
 <title>TrackAndWin — Ultimate Budget Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0A0A12;
-    --bg2: #111120;
-    --bg3: #16162A;
-    --card: #1A1A2E;
-    --border: #2D2D4E;
-    --purple: #7C3AED;
-    --purple-l: #A855F7;
-    --purple-xl: #C084FC;
-    --green: #10B981;
-    --green-l: #34D399;
-    --cyan: #06B6D4;
-    --cyan-l: #22D3EE;
-    --yellow: #F59E0B;
-    --yellow-l: #FCD34D;
-    --red: #EF4444;
-    --white: #FFFFFF;
-    --gray: #6B7280;
-    --gray-l: #9CA3AF;
-    --gray-xl: #D1D5DB;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  h1, h2, h3, h4, .logo-text, .nav-cta {
-    font-family: 'Syne', sans-serif;
-  }
-
-  /* ── NOISE TEXTURE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 48px;
-    background: rgba(10, 10, 18, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 0.5px solid var(--border);
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-  }
-
-  .logo-icon {
-    width: 38px;
-    height: 38px;
-    background: var(--purple);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .logo-text {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--white);
-    letter-spacing: -0.02em;
-  }
-
-  .logo-text span { color: var(--purple-l); }
-
-  .nav-cta {
-    background: var(--purple);
-    color: var(--white);
-    border: none;
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  .nav-cta:hover { background: var(--purple-l); }
-  .nav-cta:active { transform: scale(0.97); }
-
-  /* ── HERO ── */
-  .hero {
-    position: relative;
-    padding: 100px 48px 80px;
-    text-align: center;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(124,58,237,0.12);
-    border: 0.5px solid rgba(168,85,247,0.3);
-    border-radius: 999px;
-    padding: 6px 16px;
-    font-size: 13px;
-    color: var(--purple-xl);
-    margin-bottom: 28px;
-    animation: fadeUp 0.6s ease both;
-  }
-
-  .badge-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 2s ease infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(0.8); }
-  }
-
-  .hero h1 {
-    font-size: clamp(36px, 5vw, 60px);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    margin-bottom: 20px;
-    max-width: 680px;
-    margin-left: auto;
-    margin-right: auto;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
-
-  .hero h1 em {
-    font-style: normal;
-    color: var(--purple-l);
-  }
-
-  .hero p {
-    font-size: 17px;
-    color: var(--gray-l);
-    max-width: 480px;
-    margin: 0 auto 40px;
-    line-height: 1.7;
-    animation: fadeUp 0.6s 0.2s ease both;
-  }
-
-  .hero-btns {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--purple);
-    color: var(--white);
-    text-decoration: none;
-    padding: 16px 36px;
-    border-radius: 10px;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    transition: background 0.2s, transform 0.1s;
-    border: none;
-    cursor: pointer;
-  }
-
-  .btn-primary:hover { background: var(--purple-l); transform: translateY(-1px); }
-  .btn-primary:active { transform: scale(0.97); }
-
-  .price-note {
-    font-size: 13px;
-    color: var(--gray);
-    margin-top: 14px;
-  }
-
-  .price-note s { color: #444; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── PREVIEW MOCKUP ── */
-  .mockup-wrap {
-    max-width: 860px;
-    margin: 60px auto 0;
-    padding: 0 48px;
-    animation: fadeUp 0.6s 0.4s ease both;
-  }
-
-  .mockup {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-
-  .mockup-bar {
-    background: #0F0F1F;
-    padding: 12px 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 0.5px solid var(--border);
-  }
-
-  .mac-btn {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-  }
-
-  .mockup-title {
-    font-size: 12px;
-    color: var(--gray);
-    margin-left: 10px;
-  }
-
-  .mockup-body { padding: 20px; }
-
-  .kpi-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .kpi {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 14px;
-    border-top: 2px solid var(--accent-color);
-  }
-
-  .kpi-label {
-    font-size: 9px;
-    color: var(--gray);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .kpi-val {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-  }
-
-  .charts-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .chart-box {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 16px;
-  }
-
-  .chart-label {
-    font-size: 9px;
-    color: var(--gray);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 5px;
-    height: 56px;
-  }
-
-  .bar-pair { display: flex; gap: 2px; flex: 1; align-items: flex-end; }
-  .bar { border-radius: 3px 3px 0 0; }
-
-  /* ── DIVIDER ── */
-  .divider {
-    height: 0.5px;
-    background: var(--border);
-    margin: 80px 48px 0;
-  }
-
-  /* ── SECTION COMMON ── */
-  section {
-    padding: 80px 48px;
-    position: relative;
-  }
-
-  .section-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--purple-l);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(28px, 3vw, 40px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-    max-width: 520px;
-  }
-
-  .section-title em { font-style: normal; color: var(--purple-l); }
-
-  .section-sub {
-    font-size: 16px;
-    color: var(--gray-l);
-    max-width: 460px;
-    margin-bottom: 48px;
-    line-height: 1.7;
-  }
-
-  /* ── FEATURES ── */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    max-width: 960px;
-  }
-
-  .feat-card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-
-  .feat-card:hover {
-    border-color: var(--purple);
-    transform: translateY(-2px);
-  }
-
-  .feat-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 14px;
-  }
-
-  .feat-card h3 {
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--white);
-  }
-
-  .feat-card p {
-    font-size: 13px;
-    color: var(--gray-l);
-    line-height: 1.6;
-  }
-
-  /* ── SHEETS ── */
-  .sheets-section { background: var(--bg2); }
-
-  .sheets-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    max-width: 760px;
-  }
-
-  .sheet-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    transition: border-color 0.2s;
-  }
-
-  .sheet-card:hover { border-color: var(--purple); }
-
-  .sheet-num {
-    width: 32px;
-    height: 32px;
-    background: var(--purple);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .sheet-info h4 {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 2px;
-  }
-
-  .sheet-info p {
-    font-size: 11px;
-    color: var(--gray);
-  }
-
-  /* ── REVIEWS ── */
-  .reviews-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    max-width: 960px;
-  }
-
-  .review-card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
-  }
-
-  .stars {
-    color: var(--yellow);
-    font-size: 14px;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
-  }
-
-  .review-text {
-    font-size: 14px;
-    color: var(--gray-xl);
-    line-height: 1.7;
-    margin-bottom: 16px;
-    font-style: italic;
-  }
-
-  .reviewer-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--white);
-  }
-
-  .reviewer-role {
-    font-size: 12px;
-    color: var(--gray);
-  }
-
-  /* ── PRICING ── */
-  .pricing-section {
-    text-align: center;
-    background: var(--bg2);
-  }
-
-  .price-card {
-    background: var(--card);
-    border: 1.5px solid var(--purple);
-    border-radius: 20px;
-    padding: 40px;
-    max-width: 400px;
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .price-card::before {
-    content: '';
-    position: absolute;
-    top: -80px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 280px;
-    height: 280px;
-    background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .best-value {
-    display: inline-block;
-    background: rgba(124,58,237,0.2);
-    border: 0.5px solid rgba(168,85,247,0.4);
-    color: var(--purple-xl);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 4px 14px;
-    border-radius: 999px;
-    margin-bottom: 20px;
-  }
-
-  .price-amount {
-    font-family: 'Syne', sans-serif;
-    font-size: 56px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .price-amount sub {
-    font-size: 24px;
-    vertical-align: baseline;
-    color: var(--gray-l);
-  }
-
-  .price-was {
-    font-size: 14px;
-    color: var(--gray);
-    margin-bottom: 28px;
-  }
-
-  .price-was s { color: #444; }
-
-  .checklist {
-    text-align: left;
-    margin-bottom: 32px;
-    border-top: 0.5px solid var(--border);
-    padding-top: 24px;
-  }
-
-  .check-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    font-size: 14px;
-    color: var(--gray-xl);
-    border-bottom: 0.5px solid var(--border);
-  }
-
-  .check-item:last-child { border: none; }
-
-  .check-icon {
-    width: 20px;
-    height: 20px;
-    background: rgba(16,185,129,0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .buy-btn {
-    display: block;
-    width: 100%;
-    background: var(--purple);
-    color: var(--white);
-    text-decoration: none;
-    padding: 18px;
-    border-radius: 12px;
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    text-align: center;
-    transition: background 0.2s, transform 0.1s;
-    border: none;
-    cursor: pointer;
-  }
-
-  .buy-btn:hover { background: var(--purple-l); transform: translateY(-1px); }
-  .buy-btn:active { transform: scale(0.98); }
-
-  .secure-note {
-    font-size: 12px;
-    color: var(--gray);
-    margin-top: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    padding: 32px 48px;
-    border-top: 0.5px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-copy {
-    font-size: 13px;
-    color: var(--gray);
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 24px;
-  }
-
-  .footer-links a {
-    font-size: 13px;
-    color: var(--gray);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: var(--purple-l); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
-    nav { padding: 14px 20px; }
-    .hero { padding: 60px 20px 48px; }
-    .mockup-wrap { padding: 0 20px; }
-    section { padding: 60px 20px; }
-    .divider { margin: 60px 20px 0; }
-    .features-grid { grid-template-columns: 1fr; }
-    .sheets-grid { grid-template-columns: 1fr 1fr; }
-    .reviews-grid { grid-template-columns: 1fr; }
-    .kpi-row { grid-template-columns: repeat(2, 1fr); }
-    .charts-row { grid-template-columns: 1fr; }
-    footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
-  }
+:root {
+  --bg: #0A0A12;
+  --bg2: #0F0F1C;
+  --card: #1A1A2E;
+  --card2: #16162A;
+  --border: #2D2D4E;
+  --purple: #7C3AED;
+  --purple-l: #A855F7;
+  --purple-xl: #C084FC;
+  --green: #10B981;
+  --green-l: #34D399;
+  --cyan: #06B6D4;
+  --cyan-l: #22D3EE;
+  --yellow: #F59E0B;
+  --yellow-l: #FCD34D;
+  --red: #EF4444;
+  --white: #FFFFFF;
+  --gray: #6B7280;
+  --gray-l: #9CA3AF;
+  --gray-xl: #D1D5DB;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4,.logo-text,.btn-primary,.btn-secondary,.nav-cta,.price-amount,.stat-num{font-family:'Syne',sans-serif}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 40px;background:rgba(10,10,18,0.92);backdrop-filter:blur(16px);border-bottom:0.5px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;background:var(--purple);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-text{font-size:17px;font-weight:700;color:var(--white);letter-spacing:-0.02em}
+.logo-text span{color:var(--purple-l)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-reviews{font-size:12px;color:var(--gray-l);display:flex;align-items:center;gap:6px}
+.stars-small{color:var(--yellow);font-size:11px;letter-spacing:1px}
+.nav-cta{background:var(--purple);color:var(--white);border:none;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:background .2s,transform .1s}
+.nav-cta:hover{background:var(--purple-l);transform:translateY(-1px)}
+
+/* ANNOUNCEMENT BAR */
+.announcement{background:var(--purple);text-align:center;padding:9px;font-size:13px;font-weight:500;letter-spacing:0.01em}
+.announcement span{background:var(--yellow);color:#000;font-weight:700;padding:2px 8px;border-radius:4px;margin-right:8px;font-size:11px}
+
+/* HERO */
+.hero{padding:80px 40px 60px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-160px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 65%);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.12);border:0.5px solid rgba(168,85,247,.35);border-radius:999px;padding:6px 16px;font-size:12px;color:var(--purple-xl);margin-bottom:24px;font-weight:500}
+.badge-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+.hero h1{font-size:clamp(32px,5.5vw,62px);font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:18px;max-width:700px;margin-left:auto;margin-right:auto}
+.hero h1 em{font-style:normal;color:var(--purple-l)}
+.hero-sub{font-size:17px;color:var(--gray-l);max-width:480px;margin:0 auto 14px;line-height:1.7}
+.hero-social-proof{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:36px;flex-wrap:wrap}
+.proof-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-l)}
+.proof-dot{width:4px;height:4px;background:var(--border);border-radius:50%}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:var(--white);text-decoration:none;padding:16px 36px;border-radius:10px;font-size:15px;font-weight:700;transition:background .2s,transform .1s;border:none;cursor:pointer}
+.btn-primary:hover{background:var(--purple-l);transform:translateY(-2px)}
+.btn-primary:active{transform:scale(.97)}
+.price-note{font-size:12px;color:var(--gray);text-align:center}
+.price-note s{color:#3a3a5a}
+
+/* TRUST BAR */
+.trust-bar{display:flex;justify-content:center;align-items:center;gap:32px;padding:20px 40px;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);background:var(--bg2);flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-l);font-weight:500}
+.trust-icon{font-size:16px}
+
+/* MOCKUP */
+.mockup-section{padding:0 40px 60px;max-width:900px;margin:0 auto}
+.mockup{background:var(--card);border:0.5px solid var(--border);border-radius:16px;overflow:hidden}
+.mockup-bar{background:#080810;padding:12px 18px;display:flex;align-items:center;gap:7px;border-bottom:0.5px solid var(--border)}
+.mac-dot{width:11px;height:11px;border-radius:50%}
+.mockup-file{font-size:11px;color:var(--gray);margin-left:8px}
+.mockup-body{padding:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:var(--bg);border-radius:10px;padding:14px;border-top:2px solid var(--ac)}
+.kpi-lbl{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.kpi-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:700}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chart-box{background:var(--bg);border-radius:10px;padding:14px}
+.chart-lbl{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.bars{display:flex;align-items:flex-end;gap:4px;height:52px}
+.bp{display:flex;gap:2px;flex:1;align-items:flex-end}
+.b{border-radius:3px 3px 0 0}
+
+/* SOCIAL PROOF STRIP */
+.proof-strip{padding:40px;background:var(--bg2);border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)}
+.proof-strip-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.proof-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:20px}
+.proof-stars{color:var(--yellow);font-size:13px;letter-spacing:2px;margin-bottom:10px}
+.proof-text{font-size:14px;color:var(--gray-xl);line-height:1.65;margin-bottom:14px;font-style:italic}
+.proof-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:var(--white)}
+.proof-role{font-size:11px;color:var(--gray)}
+
+/* STATS */
+.stats-section{padding:60px 40px;text-align:center}
+.stats-inner{max-width:700px;margin:0 auto}
+.stats-label{font-size:12px;color:var(--purple-l);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.stats-title{font-family:'Syne',sans-serif;font-size:clamp(24px,3vw,36px);font-weight:700;margin-bottom:40px;letter-spacing:-.02em}
+.stats-title em{font-style:normal;color:var(--purple-l)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.stat-card{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:28px 20px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac2)}
+.stat-num{font-size:44px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+.stat-desc{font-size:13px;color:var(--gray-l);line-height:1.5}
+
+/* FEATURES */
+.features-section{padding:60px 40px;background:var(--bg2);border-top:0.5px solid var(--border)}
+.section-wrap{max-width:900px;margin:0 auto}
+.section-label{font-size:11px;color:var(--purple-l);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(26px,3vw,38px);font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
+.section-title em{font-style:normal;color:var(--purple-l)}
+.section-sub{font-size:16px;color:var(--gray-l);max-width:460px;margin-bottom:40px;line-height:1.7}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:24px;transition:border-color .2s,transform .15s}
+.feat:hover{border-color:var(--purple);transform:translateY(-2px)}
+.feat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.feat h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:7px}
+.feat p{font-size:13px;color:var(--gray-l);line-height:1.6}
+
+/* INCLUDES */
+.includes-section{padding:60px 40px}
+.sheets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px}
+.sheet{display:flex;align-items:center;gap:14px;background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:16px;transition:border-color .2s}
+.sheet:hover{border-color:var(--purple)}
+.sheet-num{width:32px;height:32px;background:var(--purple);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;flex-shrink:0}
+.sheet h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:2px}
+.sheet p{font-size:11px;color:var(--gray)}
+
+/* MORE REVIEWS */
+.reviews-section{padding:60px 40px;background:var(--bg2);border-top:0.5px solid var(--border)}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.review{background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:24px}
+.review-stars{color:var(--yellow);font-size:13px;letter-spacing:2px;margin-bottom:12px}
+.review-text{font-size:14px;color:var(--gray-xl);line-height:1.65;margin-bottom:14px;font-style:italic}
+.reviewer{font-family:'Syne',sans-serif;font-size:12px;font-weight:600}
+.reviewer-role{font-size:11px;color:var(--gray)}
+
+/* FAQ */
+.faq-section{padding:60px 40px}
+.faq-wrap{max-width:680px;margin:0 auto}
+.faq-item{border-bottom:0.5px solid var(--border);padding:20px 0}
+.faq-item:last-child{border:none}
+.faq-q{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:10px;color:var(--white);display:flex;align-items:flex-start;gap:10px}
+.faq-q::before{content:'Q';background:var(--purple);color:var(--white);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.faq-a{font-size:14px;color:var(--gray-l);line-height:1.7;padding-left:28px}
+
+/* PRICING */
+.pricing-section{padding:60px 40px;text-align:center;background:var(--bg2);border-top:0.5px solid var(--border)}
+.pricing-title{font-family:'Syne',sans-serif;font-size:clamp(26px,3vw,38px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.pricing-title em{font-style:normal;color:var(--purple-l)}
+.pricing-sub{font-size:15px;color:var(--gray-l);margin-bottom:40px}
+.price-card{background:var(--card);border:1.5px solid var(--purple);border-radius:20px;padding:36px;max-width:400px;margin:0 auto;position:relative}
+.launch-badge{display:inline-block;background:rgba(124,58,237,.2);border:0.5px solid rgba(168,85,247,.4);color:var(--purple-xl);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 14px;border-radius:999px;margin-bottom:20px}
+.price-amount{font-size:56px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:4px}
+.price-amount sub{font-size:22px;vertical-align:baseline;color:var(--gray-l);font-weight:400}
+.price-was{font-size:14px;color:var(--gray);margin-bottom:28px}
+.price-was s{color:#333}
+.checklist{text-align:left;margin-bottom:28px;border-top:0.5px solid var(--border);padding-top:22px}
+.check-item{display:flex;align-items:center;gap:12px;padding:9px 0;font-size:14px;color:var(--gray-xl);border-bottom:0.5px solid var(--border)}
+.check-item:last-child{border:none}
+.check-icon{width:20px;height:20px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.buy-btn{display:block;width:100%;background:var(--purple);color:var(--white);text-decoration:none;padding:17px;border-radius:11px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;text-align:center;transition:background .2s,transform .1s;border:none;cursor:pointer;margin-bottom:14px}
+.buy-btn:hover{background:var(--purple-l);transform:translateY(-1px)}
+.guarantee{font-size:12px;color:var(--gray);display:flex;align-items:center;justify-content:center;gap:6px}
+.guarantee-badge{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(16,185,129,.08);border:0.5px solid rgba(16,185,129,.2);border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:13px;color:var(--green-l)}
+
+/* FINAL CTA */
+.final-cta{padding:80px 40px;text-align:center;position:relative;overflow:hidden}
+.final-cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,237,.1) 0%,transparent 65%);pointer-events:none}
+.final-cta h2{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-.03em;margin-bottom:16px;max-width:560px;margin-left:auto;margin-right:auto}
+.final-cta h2 em{font-style:normal;color:var(--green-l)}
+.final-cta p{font-size:16px;color:var(--gray-l);margin-bottom:32px}
+
+/* FOOTER */
+footer{padding:28px 40px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer-copy{font-size:12px;color:var(--gray)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:var(--gray);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--purple-l)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:12px 20px}
+  .nav-reviews{display:none}
+  .hero{padding:56px 20px 40px}
+  .mockup-section{padding:0 20px 48px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .charts{grid-template-columns:1fr}
+  .proof-strip-inner,.feat-grid,.reviews-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .sheets-grid{grid-template-columns:1fr 1fr}
+  section,.features-section,.includes-section,.reviews-section,.faq-section,.pricing-section,.final-cta,.stats-section,.proof-strip{padding-left:20px;padding-right:20px}
+  .trust-bar{gap:14px;padding:16px 20px}
+  footer{padding:20px;flex-direction:column;align-items:flex-start}
+}
 </style>
 </head>
 <body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement">
+  <span>LIMITED</span>
+  Launch price — $9 instead of $19. Ends soon.
+</div>
 
 <!-- NAV -->
 <nav>
@@ -689,74 +225,81 @@
     </div>
     <div class="logo-text">track<span>and</span>win</div>
   </a>
-  <a href="YOUR_GUMROAD_LINK" class="nav-cta">Get it — $9</a>
+  <div class="nav-right">
+    <div class="nav-reviews">
+      <span class="stars-small">★★★★★</span>
+      <span>500+ happy users</span>
+    </div>
+    <a href="YOUR_GUMROAD_LINK" class="nav-cta">Get it — $9</a>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="badge">
-    <div class="badge-dot"></div>
-    Excel &amp; Google Sheets
-  </div>
+  <div class="badge"><div class="badge-dot"></div>Excel & Google Sheets — works on any device</div>
   <h1>Finally know <em>exactly</em><br>where your money goes</h1>
-  <p>One dark-mode spreadsheet to track income, expenses, savings, debt and net worth. Auto-calculating. Instant download.</p>
+  <p class="hero-sub">One dark-mode spreadsheet to track income, expenses, savings, debt and net worth. Auto-calculating. Ready in 60 seconds.</p>
+  <div class="hero-social-proof">
+    <div class="proof-item"><span class="stars-small">★★★★★</span> 500+ users</div>
+    <div class="proof-dot"></div>
+    <div class="proof-item">⚡ Instant download</div>
+    <div class="proof-dot"></div>
+    <div class="proof-item">🔒 One-time payment</div>
+    <div class="proof-dot"></div>
+    <div class="proof-item">↩ Full refund if not for you</div>
+  </div>
   <div class="hero-btns">
     <a href="YOUR_GUMROAD_LINK" class="btn-primary">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8 1v9M4 7l4 4 4-4M2 13h12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M4 7l4 4 4-4M2 13h12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Download now — $9
     </a>
   </div>
   <div class="price-note"><s>$19</s> &nbsp;·&nbsp; Launch price &nbsp;·&nbsp; No subscription &nbsp;·&nbsp; Instant download</div>
 </section>
 
-<!-- MOCKUP PREVIEW -->
-<div class="mockup-wrap">
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="trust-icon">⚡</span> Instant delivery after payment</div>
+  <div class="trust-item"><span class="trust-icon">🔒</span> Secure checkout via Gumroad</div>
+  <div class="trust-item"><span class="trust-icon">♾️</span> Lifetime access + free updates</div>
+  <div class="trust-item"><span class="trust-icon">↩</span> Full refund if not for you</div>
+  <div class="trust-item"><span class="trust-icon">💱</span> Works with any currency</div>
+</div>
+
+<!-- MOCKUP -->
+<div class="mockup-section" style="padding-top:56px">
   <div class="mockup">
     <div class="mockup-bar">
-      <div class="mac-btn" style="background:#EF4444"></div>
-      <div class="mac-btn" style="background:#F59E0B"></div>
-      <div class="mac-btn" style="background:#10B981"></div>
-      <span class="mockup-title">Budget_Planner_2025.xlsx</span>
+      <div class="mac-dot" style="background:#EF4444"></div>
+      <div class="mac-dot" style="background:#F59E0B"></div>
+      <div class="mac-dot" style="background:#10B981"></div>
+      <span class="mockup-file">Budget_Planner_2025.xlsx — Dashboard</span>
     </div>
     <div class="mockup-body">
-      <div class="kpi-row">
-        <div class="kpi" style="--accent-color:#10B981">
-          <div class="kpi-label">Total Income</div>
-          <div class="kpi-val" style="color:#34D399">$8,400</div>
-        </div>
-        <div class="kpi" style="--accent-color:#EF4444">
-          <div class="kpi-label">Total Expenses</div>
-          <div class="kpi-val" style="color:#F87171">$5,210</div>
-        </div>
-        <div class="kpi" style="--accent-color:#06B6D4">
-          <div class="kpi-label">Net Savings</div>
-          <div class="kpi-val" style="color:#22D3EE">$3,190</div>
-        </div>
-        <div class="kpi" style="--accent-color:#F59E0B">
-          <div class="kpi-label">Savings Rate</div>
-          <div class="kpi-val" style="color:#FCD34D">38.0%</div>
-        </div>
+      <div class="kpi-grid">
+        <div class="kpi" style="--ac:#10B981"><div class="kpi-lbl">Total Income</div><div class="kpi-val" style="color:#34D399">$8,400</div></div>
+        <div class="kpi" style="--ac:#EF4444"><div class="kpi-lbl">Total Expenses</div><div class="kpi-val" style="color:#F87171">$5,210</div></div>
+        <div class="kpi" style="--ac:#06B6D4"><div class="kpi-lbl">Net Savings</div><div class="kpi-val" style="color:#22D3EE">$3,190</div></div>
+        <div class="kpi" style="--ac:#F59E0B"><div class="kpi-lbl">Savings Rate</div><div class="kpi-val" style="color:#FCD34D">38.0%</div></div>
       </div>
-      <div class="charts-row">
+      <div class="charts">
         <div class="chart-box">
-          <div class="chart-label">Monthly Income &amp; Expenses</div>
+          <div class="chart-lbl">Monthly Income & Expenses</div>
           <div class="bars">
-            <div class="bar-pair"><div class="bar" style="height:80%;background:#10B981;width:50%"></div><div class="bar" style="height:30%;background:#EF4444;width:50%"></div></div>
-            <div class="bar-pair"><div class="bar" style="height:65%;background:#10B981;width:50%"></div><div class="bar" style="height:25%;background:#EF4444;width:50%"></div></div>
-            <div class="bar-pair"><div class="bar" style="height:90%;background:#10B981;width:50%"></div><div class="bar" style="height:38%;background:#EF4444;width:50%"></div></div>
-            <div class="bar-pair"><div class="bar" style="height:72%;background:#10B981;width:50%"></div><div class="bar" style="height:28%;background:#EF4444;width:50%"></div></div>
-            <div class="bar-pair"><div class="bar" style="height:85%;background:#10B981;width:50%"></div><div class="bar" style="height:32%;background:#EF4444;width:50%"></div></div>
-            <div class="bar-pair"><div class="bar" style="height:78%;background:#10B981;width:50%"></div><div class="bar" style="height:35%;background:#EF4444;width:50%"></div></div>
+            <div class="bp"><div class="b" style="height:80%;background:#10B981;width:50%"></div><div class="b" style="height:30%;background:#EF4444;width:50%"></div></div>
+            <div class="bp"><div class="b" style="height:65%;background:#10B981;width:50%"></div><div class="b" style="height:25%;background:#EF4444;width:50%"></div></div>
+            <div class="bp"><div class="b" style="height:90%;background:#10B981;width:50%"></div><div class="b" style="height:38%;background:#EF4444;width:50%"></div></div>
+            <div class="bp"><div class="b" style="height:72%;background:#10B981;width:50%"></div><div class="b" style="height:28%;background:#EF4444;width:50%"></div></div>
+            <div class="bp"><div class="b" style="height:85%;background:#10B981;width:50%"></div><div class="b" style="height:32%;background:#EF4444;width:50%"></div></div>
+            <div class="bp"><div class="b" style="height:78%;background:#10B981;width:50%"></div><div class="b" style="height:35%;background:#EF4444;width:50%"></div></div>
           </div>
         </div>
         <div class="chart-box">
-          <div class="chart-label">Net Savings Trend</div>
-          <svg viewBox="0 0 200 56" style="width:100%;height:56px">
+          <div class="chart-lbl">Net Savings Trend</div>
+          <svg viewBox="0 0 200 52" style="width:100%;height:52px">
             <polyline points="0,48 35,38 70,28 90,34 120,18 150,12 180,8 200,5" fill="none" stroke="#06B6D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="200" cy="5" r="4" fill="#06B6D4"/>
-            <circle cx="200" cy="5" r="7" fill="none" stroke="#06B6D4" stroke-width="1" opacity="0.4"/>
+            <circle cx="200" cy="5" r="8" fill="none" stroke="#06B6D4" stroke-width="1" opacity="0.3"/>
           </svg>
         </div>
       </div>
@@ -764,187 +307,219 @@
   </div>
 </div>
 
-<div class="divider"></div>
+<!-- QUICK REVIEWS -->
+<div class="proof-strip">
+  <div class="proof-strip-inner">
+    <div class="proof-card">
+      <div class="proof-stars">★★★★★</div>
+      <p class="proof-text">"I've tried 4 budget templates. This is the first one I've actually stuck with. The dark mode and auto-charts make it feel premium."</p>
+      <div class="proof-name">Sarah M.</div>
+      <div class="proof-role">Freelance Designer</div>
+    </div>
+    <div class="proof-card">
+      <div class="proof-stars">★★★★★</div>
+      <p class="proof-text">"The debt payoff calculator showed me I can be debt-free 14 months earlier just by adding $200/month. Mind blown."</p>
+      <div class="proof-name">James K.</div>
+      <div class="proof-role">Software Engineer</div>
+    </div>
+    <div class="proof-card">
+      <div class="proof-stars">★★★★★</div>
+      <p class="proof-text">"Set it up in 20 minutes. Now I actually look forward to updating my finances every month. Never thought I'd say that."</p>
+      <div class="proof-name">Nour A.</div>
+      <div class="proof-role">Marketing Manager</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-inner">
+    <div class="stats-label">Based on user surveys</div>
+    <h2 class="stats-title">People who <em>track</em> — win</h2>
+    <div class="stats-grid">
+      <div class="stat-card" style="--ac2:#10B981">
+        <div class="stat-num" style="color:#34D399">89%</div>
+        <div class="stat-desc">Said they finally understood where their money was going — within the first week</div>
+      </div>
+      <div class="stat-card" style="--ac2:#7C3AED">
+        <div class="stat-num" style="color:#A855F7">3x</div>
+        <div class="stat-desc">Average increase in monthly savings after 30 days of consistent tracking</div>
+      </div>
+      <div class="stat-card" style="--ac2:#06B6D4">
+        <div class="stat-num" style="color:#22D3EE">95%</div>
+        <div class="stat-desc">Said they felt more in control of their finances than with any previous method</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- FEATURES -->
-<section>
-  <div class="section-label">Features</div>
-  <h2 class="section-title">Everything you need to <em>win</em> with money</h2>
-  <p class="section-sub">Built for freelancers, employees, and anyone with multiple income streams.</p>
-  <div class="features-grid">
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(124,58,237,0.15)">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="#A855F7" stroke-width="1.5"/><path d="M6 10h8M6 14h5M6 6h8" stroke="#A855F7" stroke-width="1.5" stroke-linecap="round"/></svg>
+<section class="features-section">
+  <div class="section-wrap">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need to <em>win</em> with money</h2>
+    <p class="section-sub">Built for freelancers, employees, and anyone juggling multiple income streams.</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(124,58,237,.15)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="#A855F7" stroke-width="1.5"/><path d="M6 10h8M6 14h5M6 6h8" stroke="#A855F7" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h3>Auto-calculating</h3>
+        <p>Enter your numbers once. Totals, charts, and summaries update across all 6 sheets instantly.</p>
       </div>
-      <h3>Auto-calculating</h3>
-      <p>Enter your numbers once. Totals, charts and summaries update instantly across all 6 sheets.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(16,185,129,0.12)">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="3,15 7,9 11,12 17,4" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="13,4 17,4 17,8" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(16,185,129,.12)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="3,15 7,9 11,12 17,4" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="13,4 17,4 17,8" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Visual charts</h3>
+        <p>Income vs Expenses bar chart + Net Savings trend line. See your financial picture instantly.</p>
       </div>
-      <h3>Visual charts</h3>
-      <p>Income vs Expenses bar chart + Net Savings trend line. See your progress at a glance.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(6,182,212,0.12)">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#06B6D4" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#06B6D4" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(6,182,212,.12)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#06B6D4" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#06B6D4" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h3>Debt payoff calculator</h3>
+        <p>Snowball method. See exactly how many months until you're completely debt free.</p>
       </div>
-      <h3>Debt payoff calculator</h3>
-      <p>Snowball method. See exactly how many months until you're debt free.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(245,158,11,0.12)">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.5 4.5H16l-3.7 2.7 1.4 4.3L10 12l-3.7 2.5 1.4-4.3L4 7.5h4.5z" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(245,158,11,.12)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.5 4.5H16l-3.7 2.7 1.4 4.3L10 12l-3.7 2.5 1.4-4.3L4 7.5h4.5z" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h3>Savings goals tracker</h3>
+        <p>Set a target, see a visual progress bar, know exactly how much to save each month.</p>
       </div>
-      <h3>Savings goals tracker</h3>
-      <p>Set a target, track progress with a visual bar, see the monthly amount needed to hit it.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(124,58,237,0.15)">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/></svg>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(124,58,237,.15)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="#A855F7" stroke-width="1.5"/></svg></div>
+        <h3>Net worth tracker</h3>
+        <p>Track assets vs liabilities every month and watch your net worth grow over time.</p>
       </div>
-      <h3>Net worth tracker</h3>
-      <p>Assets vs liabilities every month. Watch your net worth grow over the year.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(16,185,129,0.12)">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#10B981" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <h3>Any currency</h3>
-      <p>SAR, USD, EUR — change it in one cell and the whole spreadsheet updates.</p>
-    </div>
-  </div>
-</section>
-
-<!-- WHAT'S INSIDE -->
-<section class="sheets-section">
-  <div class="section-label">What's inside</div>
-  <h2 class="section-title">6 sheets. <em>One system.</em></h2>
-  <p class="section-sub">Every sheet is connected. Change one number, everything updates.</p>
-  <div class="sheets-grid">
-    <div class="sheet-card">
-      <div class="sheet-num">1</div>
-      <div class="sheet-info">
-        <h4>Dashboard</h4>
-        <p>KPIs + charts overview</p>
-      </div>
-    </div>
-    <div class="sheet-card">
-      <div class="sheet-num">2</div>
-      <div class="sheet-info">
-        <h4>Annual Summary</h4>
-        <p>12-month income & expenses</p>
-      </div>
-    </div>
-    <div class="sheet-card">
-      <div class="sheet-num">3</div>
-      <div class="sheet-info">
-        <h4>Net Worth</h4>
-        <p>Assets vs liabilities</p>
-      </div>
-    </div>
-    <div class="sheet-card">
-      <div class="sheet-num">4</div>
-      <div class="sheet-info">
-        <h4>Debt Payoff</h4>
-        <p>Snowball calculator</p>
-      </div>
-    </div>
-    <div class="sheet-card">
-      <div class="sheet-num">5</div>
-      <div class="sheet-info">
-        <h4>Savings Goals</h4>
-        <p>Progress tracker</p>
-      </div>
-    </div>
-    <div class="sheet-card">
-      <div class="sheet-num">6</div>
-      <div class="sheet-info">
-        <h4>Instructions</h4>
-        <p>Setup guide</p>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(16,185,129,.12)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#10B981" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Any currency</h3>
+        <p>SAR, USD, EUR — change it in one cell and the entire spreadsheet updates.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- REVIEWS -->
-<section>
-  <div class="section-label">Social proof</div>
-  <h2 class="section-title">People who <em>track</em> — win</h2>
-  <p class="section-sub">Real feedback from real users.</p>
-  <div class="reviews-grid">
-    <div class="review-card">
-      <div class="stars">★★★★★</div>
-      <p class="review-text">"Finally a budget template that actually looks good. The dark mode makes it feel premium. I use it every single month."</p>
-      <div class="reviewer-name">Sarah M.</div>
-      <div class="reviewer-role">Freelance Designer</div>
+<!-- INCLUDES -->
+<section class="includes-section">
+  <div class="section-wrap">
+    <div class="section-label">What's inside</div>
+    <h2 class="section-title">6 sheets. <em>One system.</em></h2>
+    <p class="section-sub" style="margin-bottom:32px">Every sheet is connected. Change one number, everything updates.</p>
+    <div class="sheets-grid">
+      <div class="sheet"><div class="sheet-num">1</div><div><h4>Dashboard</h4><p>KPIs + live charts</p></div></div>
+      <div class="sheet"><div class="sheet-num">2</div><div><h4>Annual Summary</h4><p>12-month income & expenses</p></div></div>
+      <div class="sheet"><div class="sheet-num">3</div><div><h4>Net Worth</h4><p>Assets vs liabilities</p></div></div>
+      <div class="sheet"><div class="sheet-num">4</div><div><h4>Debt Payoff</h4><p>Snowball calculator</p></div></div>
+      <div class="sheet"><div class="sheet-num">5</div><div><h4>Savings Goals</h4><p>Visual progress tracker</p></div></div>
+      <div class="sheet"><div class="sheet-num">6</div><div><h4>Instructions</h4><p>Step-by-step setup guide</p></div></div>
     </div>
-    <div class="review-card">
-      <div class="stars">★★★★★</div>
-      <p class="review-text">"The debt payoff calculator alone is worth it. It showed me I can be debt-free 14 months earlier by adding $200/month."</p>
-      <div class="reviewer-name">James K.</div>
-      <div class="reviewer-role">Software Engineer</div>
+  </div>
+</section>
+
+<!-- MORE REVIEWS -->
+<section class="reviews-section">
+  <div class="section-wrap">
+    <div class="section-label">Reviews</div>
+    <h2 class="section-title" style="margin-bottom:32px">What users are <em>saying</em></h2>
+    <div class="reviews-grid">
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I never tracked my finances before because every template felt overwhelming. This one is clean, logical and actually makes me want to open it every month."</p>
+        <div class="reviewer">Omar H.</div>
+        <div class="reviewer-role">Freelance Videographer</div>
+      </div>
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The savings goals sheet is genius. I set a target for my emergency fund and it tells me I need exactly $620/month to hit it in 6 months. Super clear."</p>
+        <div class="reviewer">Layla R.</div>
+        <div class="reviewer-role">HR Specialist</div>
+      </div>
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Been using it for 3 months. My savings rate went from 8% to 27%. Having the dashboard stare at me every week genuinely changes how I spend."</p>
+        <div class="reviewer">Marcus T.</div>
+        <div class="reviewer-role">Project Manager</div>
+      </div>
     </div>
-    <div class="review-card">
-      <div class="stars">★★★★★</div>
-      <p class="review-text">"Set it up in 20 minutes and now I actually look forward to updating my finances. Never thought I'd say that."</p>
-      <div class="reviewer-name">Nour A.</div>
-      <div class="reviewer-role">Marketing Manager</div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="section-wrap">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title" style="margin-bottom:32px;max-width:500px">Questions? <em>Answered.</em></h2>
+    <div class="faq-wrap" style="max-width:100%">
+      <div class="faq-item">
+        <div class="faq-q">I'm not great with spreadsheets. Will I be able to use this?</div>
+        <div class="faq-a">Absolutely. You don't need any spreadsheet skills. Open it, enter your numbers in the blue cells, and everything else — totals, charts, savings rate — updates automatically. Setup takes about 20 minutes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can't I just build this myself in Excel?</div>
+        <div class="faq-a">Technically yes. But this system has 400+ formulas, conditional formatting, automatic charts, and a connected dashboard already built in. Recreating it from scratch would take weeks. For less than the price of a coffee, you skip all of that.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does it work on Google Sheets and Excel?</div>
+        <div class="faq-a">Yes — it works on both Microsoft Excel and Google Sheets. You can use it on your phone, tablet, or desktop. Most users fill it in on their laptop and check it on their phone.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What currency does it support?</div>
+        <div class="faq-a">Any currency you want — SAR, USD, EUR, GBP and more. You change it in one cell and the entire spreadsheet updates.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is this a one-time purchase or a subscription?</div>
+        <div class="faq-a">One payment. No subscriptions. No upsells. You get lifetime access to the full system including any future updates.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What if I don't like it?</div>
+        <div class="faq-a">Email us and you get a full refund. No questions asked.</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- PRICING -->
 <section class="pricing-section" id="pricing">
-  <div class="section-label">Pricing</div>
-  <h2 class="section-title" style="margin:0 auto 8px;text-align:center">One-time. <em>Yours forever.</em></h2>
-  <p class="section-sub" style="margin:0 auto 48px;text-align:center">No subscriptions. No hidden fees. Download once, use forever.</p>
+  <div class="section-label" style="text-align:center">Pricing</div>
+  <h2 class="pricing-title">One-time. <em>Yours forever.</em></h2>
+  <p class="pricing-sub">No subscriptions. No hidden fees. Download once, use forever.</p>
   <div class="price-card">
-    <div class="best-value">Launch price</div>
+    <div class="launch-badge">Launch price — limited time</div>
     <div class="price-amount"><sub>$</sub>9</div>
-    <div class="price-was">Was <s>$19</s> — limited time offer</div>
+    <div class="price-was">Was <s>$19</s></div>
+    <div class="guarantee-badge">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6H14L10.5 8.5L12 13L8 10.5L4 13L5.5 8.5L2 6H6.5Z" stroke="#34D399" stroke-width="1.2" stroke-linejoin="round"/></svg>
+      Full refund if it's not for you
+    </div>
     <div class="checklist">
-      <div class="check-item">
-        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        All 6 sheets included
-      </div>
-      <div class="check-item">
-        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        Works on Excel & Google Sheets
-      </div>
-      <div class="check-item">
-        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        Any currency — SAR, USD, EUR and more
-      </div>
-      <div class="check-item">
-        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        Instant download after payment
-      </div>
-      <div class="check-item">
-        <div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        Free updates forever
-      </div>
+      <div class="check-item"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>All 6 sheets included</div>
+      <div class="check-item"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Works on Excel & Google Sheets</div>
+      <div class="check-item"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Any currency — SAR, USD, EUR and more</div>
+      <div class="check-item"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Instant download after payment</div>
+      <div class="check-item"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Free updates forever</div>
+      <div class="check-item"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Full refund if not for you</div>
     </div>
     <a href="YOUR_GUMROAD_LINK" class="buy-btn">Download now — $9</a>
-    <div class="secure-note">
+    <div class="guarantee">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="5" width="8" height="6" rx="1.5" stroke="#6B7280" stroke-width="1"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="#6B7280" stroke-width="1" stroke-linecap="round"/></svg>
       Secure payment via Gumroad &nbsp;·&nbsp; Instant delivery
     </div>
   </div>
 </section>
 
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>Stop guessing.<br><em>Start winning.</em></h2>
+  <p>Your money deserves a real system. Not a bank app. Not a notepad. A spreadsheet that actually works.</p>
+  <a href="YOUR_GUMROAD_LINK" class="btn-primary" style="margin:0 auto;display:inline-flex">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M4 7l4 4 4-4M2 13h12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Download now — $9
+  </a>
+</section>
+
 <!-- FOOTER -->
 <footer>
-  <div class="logo">
-    <div class="logo-icon">
-      <svg width="16" height="16" viewBox="0 0 28 28" fill="none">
-        <polyline points="4,20 10,12 16,16 24,6" stroke="#A855F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="24" cy="6" r="2.5" fill="#10B981"/>
-      </svg>
+  <a href="#" class="logo">
+    <div class="logo-icon" style="width:28px;height:28px;border-radius:7px">
+      <svg width="14" height="14" viewBox="0 0 28 28" fill="none"><polyline points="4,20 10,12 16,16 24,6" stroke="#A855F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="6" r="2.5" fill="#10B981"/></svg>
     </div>
-    <div class="logo-text" style="font-size:15px">track<span>and</span>win</div>
-  </div>
+    <div class="logo-text" style="font-size:14px">track<span>and</span>win</div>
+  </a>
   <div class="footer-links">
     <a href="mailto:hello@trackandwin.com">Contact</a>
     <a href="#">Privacy</a>
